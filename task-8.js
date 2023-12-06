@@ -81,7 +81,15 @@ const listEl = images
 </li>`;
   })
   .join();
+  
 gallery.insertAdjacentHTML("afterbegin", listEl);
+
+function addKeyboardListener() {
+  document.addEventListener('keyup', handleKeyPress);
+}
+function removeKeyboardListener() {
+  document.removeEventListener('keyup', handleKeyPress);
+}
 
 gallery.addEventListener("click", function (event) {
   event.preventDefault();
@@ -89,7 +97,8 @@ gallery.addEventListener("click", function (event) {
     if (event.target.classList.contains("gallery-image")) {
    
     const largeImageSrc = event.target.dataset.source;
-    const largeImageAlt = event.target.alt;
+      const largeImageAlt = event.target.alt;
+      
      modalWindow = basicLightbox.create(`
     <div class="modal">
         <img
@@ -102,12 +111,16 @@ gallery.addEventListener("click", function (event) {
 
       modalWindow.show();
       
-      document.addEventListener('keyup', handleKeyPress);
+      addKeyboardListener();
   }
 });
 function handleKeyPress(event) {
   if (event.code === 'Escape' && modalWindow) {
     modalWindow.close();
-    document.removeEventListener('keyup', handleKeyPress);
+   removeKeyboardListener()
   }
 }
+basicLightbox.create(document.querySelector('.modal'), {
+  onShow: addKeyboardListener,
+  onClose: removeKeyboardListener
+});
